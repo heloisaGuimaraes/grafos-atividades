@@ -8,6 +8,7 @@ cam_usados = []         # Caminhos usados pelo menos uma vez no res_dj
 # ==============================================================================
 # A função encontra o caminho disponível de menor custo, remove da lista de op_arestas e o retorna
 
+
 def encontra_menor():
     pos = 0
     min = op_arestas[0]
@@ -56,7 +57,7 @@ for j in range(arestas):  # ler as arestas do grafo
 mostrar_lista(lista_adj)
 
 # Escolhendo a raiz de modo aleartório
-raiz = random.randint(0, vertices-1)
+raiz = 0  # random.randint(0, vertices-1)
 
 # Adicionando os caminhos disponiveis da raiz no op_arestas
 update_caminhos(raiz, 0)
@@ -71,11 +72,20 @@ while qtd_arestas < (vertices-1):
     # Procurando o caminho de menor custo
     (custo, a, b) = encontra_menor()
     # Verificando se o caminho já foi usado alguma vez, para evitar ciclos e repetições
-    if (((a, b) and (b, a)) not in cam_usados) and (b not in marcados):
-        cam_usados.append((a, b))
-        marcados.append(b)
-        res_dj.append((custo, a, b))  # custo, saída, chegada
-        qtd_arestas += 1
+    if (((a, b) and (b, a)) not in cam_usados):
+
+        if (b not in marcados):
+            cam_usados.append((a, b))
+            marcados.append(b)
+            res_dj.append((custo, a, b))  # custo, saída, chegada
+            qtd_arestas += 1
+        else:
+            posDado = marcados.index(b)
+            custoComp = res_dj[posDado-1]
+            custoComp = custoComp[0]
+            if (custo < custoComp):
+                res_dj[posDado-1] = (custo, a, b)
+                cam_usados.append((a, b))
 
     # Adicionando novos caminhos disponíveis no op_arestas para a proxima escolha
     update_caminhos(b, custo)
